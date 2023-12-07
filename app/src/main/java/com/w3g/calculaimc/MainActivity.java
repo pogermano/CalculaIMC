@@ -1,5 +1,6 @@
 package com.w3g.calculaimc;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.media.Image;
 import android.os.Bundle;
@@ -7,16 +8,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-//import android.widget.Toast;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText etPeso;
     private EditText etAltura;
-    // private Button btCalcular;
+
     private IMC imc;
 
 
@@ -25,10 +27,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         etPeso = findViewById(R.id.etPeso);
         etAltura = findViewById(R.id.etAltura);
         Button btCalcular = findViewById(R.id.btCalcular);
-        ImageView img = findViewById(R.id.imgPrincipal);
 
         btCalcular.setOnClickListener(v -> {
             String inputPeso = etPeso.getText().toString();
@@ -40,9 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
                 MainActivity.this.Calcular(peso, altura);
             } else {
-                // Mostra uma mensagem ou realiza alguma ação para lidar com campos vazios
-                //  Toast.makeText(MainActivity.this, "Preencha todos os campos antes de calcular",
-                // Toast.LENGTH_SHORT).show();
                 String msg = "Preencha todos os campos antes de calcular";
                 String titulo = "Erro!";
                 exibirAlerta(msg, titulo);
@@ -53,13 +52,17 @@ public class MainActivity extends AppCompatActivity {
     private void Calcular(float peso, float altura) {
         this.imc = new IMC(peso, altura);
         this.imc.CalculaIMC();
+        InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        im.hideSoftInputFromWindow(super.getCurrentFocus().getWindowToken(), 0);
+
         this.imc.classificar();
         this.mudarImagem((String) this.imc.getImg());
+        this.exibirResultado();
        /* Toast.makeText(MainActivity.this, "Seu IMC é: "
                                 +this.imc.getResultado(),
                         Toast.LENGTH_SHORT)
                         .show();*/
-        this.exibirResultado();
+
 
     }
 
